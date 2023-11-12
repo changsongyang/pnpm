@@ -63,6 +63,7 @@
     "@pnpm/constants": "workspace:*",
     "@pnpm/core": "workspace:*",
     "@pnpm/dedupe.check": "workspace:*",
+    "@pnpm/dependency-path": "workspace:*",
     "@pnpm/error": "workspace:*",
     "@pnpm/filter-workspace-packages": "workspace:*",
     "@pnpm/find-workspace-dir": "workspace:*",
