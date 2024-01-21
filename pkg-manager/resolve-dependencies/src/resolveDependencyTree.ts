@@ -29,6 +29,7 @@ import {
   type ResolvedPkgsById,
   type ResolutionContext,
 } from './resolveDependencies'
+import { resolveFromCatalog } from './resolveFromCatalog'
 
 export type { LinkedDependency, ResolvedPackage, DependenciesTree, DependenciesTreeNode } from './resolveDependencies'
 
@@ -129,6 +130,7 @@ export async function resolveDependencyTree<T> (
     autoInstallPeersFromHighestMatch: opts.autoInstallPeersFromHighestMatch === true,
     allowBuild: opts.allowBuild,
     allowedDeprecatedVersions: opts.allowedDeprecatedVersions,
+    catalogResolver: resolveFromCatalog.bind(null, opts.catalogs),
     childrenByParentId: {} as ChildrenByParentId,
     currentLockfile: opts.currentLockfile,
     defaultTag: opts.tag,

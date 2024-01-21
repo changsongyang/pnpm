@@ -50,6 +50,7 @@ import pickBy from 'ramda/src/pickBy'
 import omit from 'ramda/src/omit'
 import zipWith from 'ramda/src/zipWith'
 import semver from 'semver'
+import { type CatalogResolver } from './resolveFromCatalog'
 import { getNonDevWantedDependencies, type WantedDependency } from './getNonDevWantedDependencies'
 import { safeIntersect } from './mergePeers'
 import { type NodeId, nextNodeId } from './nextNodeId'
@@ -137,6 +138,7 @@ export interface ResolutionContext {
   allPreferredVersions?: PreferredVersions
   appliedPatches: Set<string>
   updatedSet: Set<string>
+  catalogResolver: CatalogResolver
   defaultTag: string
   dryRun: boolean
   forceFullResolution: boolean
@@ -1136,7 +1138,13 @@ async function resolveDependency (
       optional: true,
     }
   }
+
+  const catalogLookup = ctx.catalogResolver(wantedDependency)
+
   try {
+    if (catalogLookup != null) {
+      wantedDependency.pref = catalogLookup.entrySpecifier
+    }
     if (!options.update && currentPkg.version && currentPkg.pkgId?.endsWith(`@${currentPkg.version}`)) {
       wantedDependency.pref = replaceVersionInPref(wantedDependency.pref, currentPkg.version)
     }
