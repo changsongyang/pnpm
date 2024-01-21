@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
+import { type Catalogs } from '@pnpm/catalogs.types'
 import { contextLogger, packageManifestLogger } from '@pnpm/core-loggers'
 import { PnpmError } from '@pnpm/error'
 import { type Lockfile } from '@pnpm/lockfile-file'
@@ -17,6 +18,7 @@ import {
   type ReadPackageHook,
   type Registries,
 } from '@pnpm/types'
+import { type WorkspaceManifest } from '@pnpm/workspace.read-manifest'
 import rimraf from '@zkochan/rimraf'
 import { isCI } from 'ci-info'
 import enquirer from 'enquirer'
@@ -26,11 +28,13 @@ import equals from 'ramda/src/equals'
 import { checkCompatibility } from './checkCompatibility'
 import { UnexpectedStoreError } from './checkCompatibility/UnexpectedStoreError'
 import { UnexpectedVirtualStoreDirError } from './checkCompatibility/UnexpectedVirtualStoreDirError'
+import { readCatalogsFromWorkspaceManifest } from './readCatalogsFromWorkspaceManifest'
 import { readLockfiles } from './readLockfiles'
 
 export { UnexpectedStoreError, UnexpectedVirtualStoreDirError }
 
 export interface PnpmContext {
+  catalogs: Catalogs
   currentLockfile: Lockfile
   currentLockfileIsUpToDate: boolean
   existsCurrentLockfile: boolean
@@ -95,6 +99,7 @@ export interface GetContextOptions {
   mergeGitBranchLockfiles?: boolean
   virtualStoreDir?: string
   virtualStoreDirMaxLength: number
+  workspaceManifest?: WorkspaceManifest
 
   hoistPattern?: string[] | undefined
   forceHoistPattern?: boolean
@@ -168,6 +173,7 @@ export async function getContext (
   }
   const hoistPattern = importersContext.currentHoistPattern ?? opts.hoistPattern
   const ctx: PnpmContext = {
+    catalogs: readCatalogsFromWorkspaceManifest(opts.workspaceManifest),
     extraBinPaths,
     extraNodePaths: getExtraNodePaths({ extendNodePath: opts.extendNodePath, nodeLinker: opts.nodeLinker, hoistPattern, virtualStoreDir }),
     hoistedDependencies: importersContext.hoistedDependencies,
