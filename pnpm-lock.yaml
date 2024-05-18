@@ -634,6 +634,9 @@ importers:
       '@pnpm/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@pnpm/workspace.read-manifest':
+        specifier: workspace:*
+        version: link:../../workspace/read-manifest
       better-path-resolve:
         specifier: 1.0.0
         version: 1.0.0
@@ -6422,6 +6425,9 @@ importers:
       '@pnpm/workspace.pkgs-graph':
         specifier: workspace:*
         version: link:../pkgs-graph
+      '@pnpm/workspace.read-manifest':
+        specifier: workspace:*
+        version: link:../read-manifest
       execa:
         specifier: npm:safe-execa@0.1.2
         version: safe-execa@0.1.2
